@@ -18,6 +18,7 @@ First we need to build dolphin-docker image.
 Please go to the cloned directory.
 
 cd your_path/dolphin-docker
+
 docker build -t dolphin-docker .
 
 Creating an export directory in your host
@@ -30,8 +31,9 @@ boot2docker ssh
 
 create your export directory and give the full permissions that are going to be used by the container.
 
-mkdir /mnt/sda1/export
-chmod 777 /mnt/sda1/export
+sudo mkdir /mnt/sda1/export
+
+sudo chmod 777 /mnt/sda1/export
 
 Running dolphin-docker
 ================
@@ -39,6 +41,10 @@ Running dolphin-docker
 Dolphin docker has a apache web server that will be used on port 8080 if you run like below. 
 
 docker run -p 8080:80 -v /mnt/sda1/export:/export -ti dolphin-docker /bin/bash
+
+or you can pull latest stable build
+
+docker run -p 8080:80 -v /mnt/sda1/export:/export -ti nephantes/dolphin-docker /bin/bash
 
 Initialize the system 
 ================
