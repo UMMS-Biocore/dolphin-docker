@@ -84,7 +84,6 @@ RUN php5enmod mcrypt
 ENV GITUSER=nephantes
 ADD bin  /usr/local/bin
 RUN git clone https://github.com/${GITUSER}/dolphin-bin /usr/local/bin/dolphin-bin
-RUN cd /usr/local/bin/dolphin-bin/ZSI-2.1-a1 && python setup.py install
 RUN cd /usr/local/bin/dolphin-bin/MACS-1.4.2 && python setup.py install
 RUN git clone https://github.com/${GITUSER}/dolphin-webservice.git /var/www/html/dolphin_webservice
 RUN echo 'Dolphin Docker 0.37'
