@@ -85,7 +85,6 @@ ENV GITUSER=nephantes
 ADD bin  /usr/local/bin
 RUN git clone https://github.com/${GITUSER}/dolphin-bin /usr/local/bin/dolphin-bin
 RUN cd /usr/local/bin/dolphin-bin/MACS-1.4.2 && python setup.py install
-RUN git clone https://github.com/${GITUSER}/dolphin-webservice.git /var/www/html/dolphin_webservice
 RUN echo 'Dolphin Docker 0.37'
 RUN git clone https://github.com/${GITUSER}/dolphin-tools /usr/local/share/dolphin_tools
 RUN git clone https://github.com/${GITUSER}/dolphin-ui.git /var/www/html/dolphin
