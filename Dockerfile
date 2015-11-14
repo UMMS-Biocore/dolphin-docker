@@ -1,7 +1,9 @@
 FROM ubuntu:latest
  
 MAINTAINER Alper Kucukural <alper.kucukural@umassmed.edu>
- 
+
+RUN echo "ALPER"
+
 RUN apt-get update
 RUN apt-get -y upgrade
 RUN apt-get dist-upgrade
@@ -67,6 +69,7 @@ RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www
 RUN echo "export JAVA_OPTS=\"-Djava.util.prefs.systemRoot=/var/www/.java Djava.util.prefs.userRoot=/var/www/.java/.userPrefs\"" >> /etc/apache2/envvars
 
 RUN pip install -U boto
+RUN pip install numpy
 
 # Install phpMyAdmin
 
@@ -85,7 +88,7 @@ ENV GITUSER=nephantes
 ADD bin  /usr/local/bin
 RUN git clone https://github.com/${GITUSER}/dolphin-bin /usr/local/bin/dolphin-bin
 RUN cd /usr/local/bin/dolphin-bin/MACS-1.4.2 && python setup.py install
-RUN echo 'Dolphin Docker 0.37'
+RUN cd /usr/local/bin/dolphin-bin/RSeQC-2.6.2 && python setup.py install
 RUN git clone https://github.com/${GITUSER}/dolphin-tools /usr/local/share/dolphin_tools
 RUN git clone https://github.com/${GITUSER}/dolphin-ui.git /var/www/html/dolphin
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html/dolphin
