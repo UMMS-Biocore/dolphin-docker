@@ -2,8 +2,6 @@ FROM ubuntu:latest
  
 MAINTAINER Alper Kucukural <alper.kucukural@umassmed.edu>
 
-RUN echo "ALPER"
-
 RUN apt-get update
 RUN apt-get -y upgrade
 RUN apt-get dist-upgrade
@@ -13,7 +11,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 libapache2-mod-php
                     php5-mysqlnd php5-gd php-pear php-apc php5-curl curl lynx-cur mysql-server \
                     libreadline-dev libsqlite3-dev libbz2-dev libssl-dev python python-dev \
                     libmysqlclient-dev python-pip git expect default-jre r-base r-base-dev \
-                    libxml2-dev software-properties-common
+                    libxml2-dev software-properties-common libcurl4-gnutls-dev
 
 RUN add-apt-repository ppa:marutter/rrutter
 
@@ -48,12 +46,14 @@ EXPOSE 80
 EXPOSE 3306
 
 
-#Install DESeq2 
-RUN R -e 'source("http://bioconductor.org/biocLite.R"); biocLite("DESeq2");'
+#Install R Packages
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
 RUN R -e 'install.packages("ggplot2")'
 RUN R -e 'install.packages("gplots")'
-
+RUN R -e 'source("http://bioconductor.org/biocLite.R"); biocLite(c("DESeq2","GenomicRanges","IRanges"));'
+RUN R -e 'install.packages( "data.table" )'
+RUN R -e 'install.packages( "devtools", dependencies = TRUE )'
+RUN R -e 'library(devtools); install_github("al2na/methylKit",build_vignettes=FALSE)'
 
 # Update the default apache site with the config we created.
 ADD apache-config.conf /etc/apache2/sites-enabled/000-default.conf
