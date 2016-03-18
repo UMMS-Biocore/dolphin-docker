@@ -2,6 +2,8 @@ FROM ubuntu:latest
  
 MAINTAINER Alper Kucukural <alper.kucukural@umassmed.edu>
 
+RUN echo alper
+
 RUN apt-get update
 RUN apt-get -y upgrade
 RUN apt-get dist-upgrade
@@ -11,7 +13,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 libapache2-mod-php
                     php5-mysqlnd php5-gd php-pear php-apc php5-curl curl lynx-cur mysql-server \
                     libreadline-dev libsqlite3-dev libbz2-dev libssl-dev python python-dev \
                     libmysqlclient-dev python-pip git expect default-jre r-base r-base-dev \
-                    libxml2-dev software-properties-common libcurl4-gnutls-dev
+                    libxml2-dev software-properties-common libcurl4-gnutls-dev gdebi-core wget
 
 RUN add-apt-repository ppa:marutter/rrutter
 
@@ -44,15 +46,12 @@ ENV DOLPHIN_PARAMS_SECTION=Docker
 
 EXPOSE 80
 EXPOSE 3306
-
+EXPOSE 3838
 
 #Install R Packages
 RUN echo "r <- getOption('repos'); r['CRAN'] <- 'http://cran.us.r-project.org'; options(repos = r);" > ~/.Rprofile
-RUN R -e 'install.packages("ggplot2")'
-RUN R -e 'install.packages("gplots")'
-RUN R -e 'source("http://bioconductor.org/biocLite.R"); biocLite(c("DESeq2","GenomicRanges","IRanges"));'
-RUN R -e 'install.packages( "data.table" )'
-RUN R -e 'install.packages( "devtools", dependencies = TRUE )'
+RUN R -e 'install.packages(c("ggvis", "ggplot2", "RColorBrewer", "DT", "gplots", "data.table"), dependencies = TRUE )'
+RUN R -e 'source("http://bioconductor.org/biocLite.R"); biocLite(c("DESeq2","GenomicRanges","IRanges","clusterProfiler","DESeq2","shiny","annotate","AnnotationDbi","org.Hs.eg.db","DOSE","edgeR","ReactomePA"));'
 RUN R -e 'library(devtools); install_github("al2na/methylKit",build_vignettes=FALSE)'
 
 # Update the default apache site with the config we created.
@@ -67,6 +66,10 @@ RUN mkdir /var/www/.java/.userPrefs
 RUN chmod -R 755 /var/www/.java
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www
 RUN echo "export JAVA_OPTS=\"-Djava.util.prefs.systemRoot=/var/www/.java Djava.util.prefs.userRoot=/var/www/.java/.userPrefs\"" >> /etc/apache2/envvars
+
+RUN wget https://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-1.4.2.786-amd64.deb
+RUN gdebi -n shiny-server-1.4.2.786-amd64.deb
+RUN rm shiny-server-1.4.2.786-amd64.deb
 
 RUN pip install -U boto
 RUN pip install numpy
@@ -90,7 +93,12 @@ RUN git clone https://github.com/${GITUSER}/dolphin-bin /usr/local/bin/dolphin-b
 RUN cd /usr/local/bin/dolphin-bin/MACS-1.4.2 && python setup.py install
 RUN cd /usr/local/bin/dolphin-bin/RSeQC-2.6.2 && python setup.py install
 RUN git clone https://github.com/${GITUSER}/dolphin-tools /usr/local/share/dolphin_tools
+RUN echo alper1
 RUN git clone https://github.com/${GITUSER}/dolphin-ui.git /var/www/html/dolphin
+RUN git clone https://github.com/${GITUSER}/debrowser.git /srv/shiny-server/debrowser
+RUN R CMD INSTALL /srv/shiny-server/debrowser
+RUN sed -i "s/#    library/     library/" /srv/shiny-server/debrowser/R/server.R
+RUN mkdir -p /var/www/html/dolphin/tmp/files /var/www/html/dolphin/tmp/logs /export/tmp/logs
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html/dolphin
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /usr/local/share/dolphin_tools
 
