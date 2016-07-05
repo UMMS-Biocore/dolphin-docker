@@ -93,6 +93,9 @@ RUN git clone https://github.com/${GITUSER}/dolphin-bin /usr/local/bin/dolphin-b
 RUN cd /usr/local/bin/dolphin-bin/MACS-1.4.2 && python setup.py install
 RUN cd /usr/local/bin/dolphin-bin/RSeQC-2.6.2 && python setup.py install
 RUN git clone https://github.com/${GITUSER}/dolphin-tools /usr/local/share/dolphin_tools
+RUN git clone https://github.com/rmccue/Requests.git /usr/local/share/Requests
+RUN wget http://hgwdev.cse.ucsc.edu/~galt/encode3/validatePackage/validateEncode3-latest.tgz -P /usr/local/share/validateEncode
+RUN tar -xvzf /usr/local/share/validateEncode/validateEncode3-latest.tgz -C /usr/local/share/validateEncode
 RUN echo alper1
 RUN git clone https://github.com/${GITUSER}/dolphin-ui.git /var/www/html/dolphin
 RUN git clone https://github.com/${GITUSER}/debrowser.git /srv/shiny-server/debrowser
