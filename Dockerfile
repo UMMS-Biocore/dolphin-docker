@@ -90,7 +90,7 @@ RUN php5enmod mcrypt
 ENV GITUSER=nephantes
 ADD bin  /usr/local/bin
 RUN git clone https://github.com/${GITUSER}/dolphin-bin /usr/local/bin/dolphin-bin
-RUN cd /usr/local/bin/dolphin-bin/MACS-1.4.2 && python setup.py install
+RUN cd /usr/local/bin/dolphin-bin/MACS2 && python setup.py install
 RUN cd /usr/local/bin/dolphin-bin/RSeQC-2.6.2 && python setup.py install
 RUN git clone https://github.com/${GITUSER}/dolphin-tools /usr/local/share/dolphin_tools
 RUN git clone https://github.com/rmccue/Requests.git /usr/local/share/Requests
