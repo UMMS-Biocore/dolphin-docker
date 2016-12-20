@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:trusty
  
 MAINTAINER Alper Kucukural <alper.kucukural@umassmed.edu>
 
