@@ -140,9 +140,9 @@ RUN wget http://hgwdev.cse.ucsc.edu/~galt/encode3/validatePackage/validateEncode
 RUN tar -xvzf /usr/local/share/validateEncode/validateEncode3-latest.tgz -C /usr/local/share/validateEncode
 
 RUN git clone https://github.com/${GITUSER}/dolphin-ui.git /var/www/html/dolphin
-#RUN git clone https://github.com/${GITUSER}/debrowser.git /srv/shiny-server/debrowser
-#RUN R CMD INSTALL /srv/shiny-server/debrowser
-#RUN sed -i "s/#library/library/" /srv/shiny-server/debrowser/R/server.R
+RUN git clone https://github.com/${GITUSER}/debrowser.git /srv/shiny-server/debrowser
+RUN R CMD INSTALL /srv/shiny-server/debrowser
+RUN sed -i "s/#library/library/" /srv/shiny-server/debrowser/R/server.R
 RUN mkdir -p /var/www/html/dolphin/tmp/files /var/www/html/dolphin/tmp/logs /export/tmp/logs
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html/dolphin
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /usr/local/share/dolphin_tools
