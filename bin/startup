@@ -7,11 +7,12 @@ source /etc/apache2/envvars
 python3.4 /usr/local/bin/export_user_files.py 
 
 mkdir -p /export/pub
+mkdir -p /export/tmp/logs
 chown ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /export/pub
 ln -s /export/pub /var/www/html/dolphin/public/.
 mkdir -p /var/www/html/dolphin/tmp/files
 chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html/dolphin/tmp
-printf "[Dolphin]\nSALT=1234567890\nPEPPER=0987654321\nMASTER=docker\nAMAZON=docker\nENCODE_ACCESS=encodeaccess\nENCODE_SECRET=encodesecret\nVERIFY=verify" > /var/www/html/config/.salt
+printf "[Dolphin]\nSALT=1234567890\nPEPPER=0987654321\nMASTER=docker\nAMAZON=docker\nENCODE_ACCESS=encodeaccess\nENCODE_SECRET=encodesecret\nVERIFY=verify" > /var/www/html/dolphin/config/.salt
 
 service mysql start
 # start Apache in Foreground, that is needed for Docker
