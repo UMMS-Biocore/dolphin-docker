@@ -15,7 +15,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 libapache2-mod-php
                     tree vim libv8-dev subversion g++ gcc gfortran zlib1g-dev libreadline-dev \
                     libx11-dev xorg-dev libbz2-dev liblzma-dev libpcre3-dev libcurl4-openssl-dev \
                     default-jdk texinfo texlive-latex-base texlive-latex-recommended texlive-fonts-extra \
-                    texlive-fonts-recommended r-cran-plyr r-cran-reshape2 ccache 
+                    texlive-fonts-recommended r-cran-plyr r-cran-reshape2 ccache libpam0g-dev 
  
 RUN add-apt-repository ppa:marutter/rrutter
 
@@ -107,10 +107,19 @@ RUN chmod -R 755 /var/www/.java
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www
 RUN echo "export JAVA_OPTS=\"-Djava.util.prefs.systemRoot=/var/www/.java Djava.util.prefs.userRoot=/var/www/.java/.userPrefs\"" >> /etc/apache2/envvars
 
+ENV RSTUDIO_VER=rstudio-server-1.0.136-amd64.deb
+RUN wget https://download2.rstudio.org/${RSTUDIO_VER}
+RUN gdebi -n ${RSTUDIO_VER}
+RUN rm ${RSTUDIO_VER}
+#RUN echo 'LANG=en_US.UTF-8\nLC_ALL=en_US.UTF-8' > /etc/default/locale
+RUN echo 'server-app-armor-enabled=0' > /etc/rstudio/rserver.conf
+RUN ln -s  /usr/lib/rstudio-server/extras/init.d/debian/rstudio-server /etc/init.d/.
+
 ENV SHINY_VER=shiny-server-1.5.2.837-amd64.deb
 RUN wget https://download3.rstudio.org/ubuntu-12.04/x86_64/${SHINY_VER}
 RUN gdebi -n ${SHINY_VER}
 RUN rm ${SHINY_VER}
+RUN ln -s /opt/shiny-server/config/init.d/debian/shiny-server /etc/init.d/.
 
 RUN pip install -U boto
 RUN pip install numpy
@@ -129,7 +138,7 @@ RUN php5enmod mcrypt
  
 # Copy site into place.
 ENV GITUSER=UMMS-Biocore
-ADD bin  /usr/local/bin
+ADD bin /usr/local/bin
 RUN git clone https://github.com/${GITUSER}/dolphin-bin /usr/local/bin/dolphin-bin
 RUN cd /usr/local/bin/dolphin-bin/MACS2 && python setup.py install
 RUN cd /usr/local/bin/dolphin-bin/RSeQC-2.6.2 && python setup.py install
@@ -141,7 +150,7 @@ RUN tar -xvzf /usr/local/share/validateEncode/validateEncode3-latest.tgz -C /usr
 
 RUN git clone https://github.com/${GITUSER}/dolphin-ui.git /var/www/html/dolphin
 RUN git clone https://github.com/${GITUSER}/debrowser.git /srv/shiny-server/debrowser
-RUN R CMD INSTALL /srv/shiny-server/debrowser
+#RUN R CMD INSTALL /srv/shiny-server/debrowser
 RUN sed -i "s/#library/library/" /srv/shiny-server/debrowser/R/server.R
 RUN mkdir -p /var/www/html/dolphin/tmp/files /var/www/html/dolphin/tmp/logs /export/tmp/logs
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html/dolphin
@@ -149,3 +158,5 @@ RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /usr/local/share/dolphin_too
 
 RUN apt-get -y autoremove
 
+RUN echo "locale-gen en_US.UTF-8"
+RUN echo "dpkg-reconfigure locales"
