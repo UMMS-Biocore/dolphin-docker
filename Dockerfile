@@ -126,9 +126,9 @@ RUN pip install numpy
 
 # Install phpMyAdmin
 
-RUN service mysql start \
-    service apache2 start; \
-    DEBIAN_FRONTEND=noninteractive apt-get -y install phpmyadmin; \ 
+RUN find /var/lib/mysql -type f -exec touch {} \; && service mysql start && \
+    service apache2 start && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install phpmyadmin && \ 
     zcat /usr/share/doc/phpmyadmin/examples/create_tables.sql.gz|mysql -uroot
 
 RUN sed -i "s#// \$cfg\['Servers'\]\[\$i\]\['AllowNoPassword'\] = TRUE;#\$cfg\['Servers'\]\[\$i\]\['AllowNoPassword'\] = TRUE;#g" /etc/phpmyadmin/config.inc.php 
@@ -150,7 +150,7 @@ RUN tar -xvzf /usr/local/share/validateEncode/validateEncode3-latest.tgz -C /usr
 
 RUN git clone https://github.com/${GITUSER}/dolphin-ui.git /var/www/html/dolphin
 RUN git clone https://github.com/${GITUSER}/debrowser.git /srv/shiny-server/debrowser
-#RUN R CMD INSTALL /srv/shiny-server/debrowser
+RUN R CMD INSTALL /srv/shiny-server/debrowser
 RUN sed -i "s/#library/library/" /srv/shiny-server/debrowser/R/server.R
 RUN mkdir -p /var/www/html/dolphin/tmp/files /var/www/html/dolphin/tmp/logs /export/tmp/logs
 RUN chown -R ${APACHE_RUN_USER}:${APACHE_RUN_GROUP} /var/www/html/dolphin
