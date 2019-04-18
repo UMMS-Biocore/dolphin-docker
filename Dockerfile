@@ -11,7 +11,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 libapache2-mod-php
                     php5-mysqlnd php5-gd php-pear php-apc php5-curl curl lynx-cur mysql-server \
                     libreadline-dev libsqlite3-dev libbz2-dev libssl-dev python python-dev \
                     libmysqlclient-dev python-pip git expect default-jre \
-                    libxml2-dev software-properties-common gdebi-core wget \
+                    libxml2-dev software-properties-common gdebi-core wget awscli s3cmd \
                     tree vim libv8-dev subversion g++ gcc gfortran zlib1g-dev libreadline-dev \
                     libx11-dev xorg-dev libbz2-dev liblzma-dev libpcre3-dev libcurl4-openssl-dev \
                     default-jdk texinfo texlive-latex-base texlive-latex-recommended texlive-fonts-extra \
